@@ -10,6 +10,10 @@ public class ChannelContext {
 
     private ClientRecord clientRecord;
 
+    private ServerContext serverContext;
+
+    private int bindPort;
+
     public BufferedOutputStream getOut() {
         return out;
     }
@@ -24,5 +28,21 @@ public class ChannelContext {
 
     public void setClientRecord(ClientRecord clientRecord) {
         this.clientRecord = clientRecord;
+    }
+
+    public ServerContext getServerContext() {
+        return serverContext;
+    }
+
+    public void setServerContext(ServerContext serverContext) {
+        this.serverContext = serverContext;
+    }
+
+    public int getBindPort() {
+        return bindPort;
+    }
+
+    public void setBindPort(int bindPort) {
+        this.bindPort = bindPort;
     }
 }
