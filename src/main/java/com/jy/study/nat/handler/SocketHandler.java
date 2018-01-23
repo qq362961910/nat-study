@@ -2,18 +2,16 @@ package com.jy.study.nat.handler;
 
 import com.jy.study.nat.entity.ClientRecord;
 import com.jy.study.nat.entity.Message;
-import com.jy.study.nat.exception.ClientCloseSocketException;
+import com.jy.study.nat.exception.SocketClosedException;
 import com.jy.study.nat.executor.Executor;
 import com.jy.study.nat.executor.ExecutorProvider;
 import com.jy.study.nat.server.ChannelContext;
 import com.jy.study.nat.server.ServerContext;
-import com.jy.study.nat.util.MessageUtil;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Arrays;
 
 public class SocketHandler implements Runnable {
     private ServerContext serverContext;
@@ -31,7 +29,7 @@ public class SocketHandler implements Runnable {
                     for (Executor executor: ExecutorProvider.SERVER_EXECUTOR_LIST) {
                         executor.execute(channelContext, message);
                     }
-                }catch (ClientCloseSocketException e) {
+                }catch (SocketClosedException e) {
                     serverContext.getClientList().remove(channelContext.getClientRecord());
                     System.out.println(String.format("client: %s:%d closed", channelContext.getClientRecord().getHost(), channelContext.getClientRecord().getPort()));
                     break;

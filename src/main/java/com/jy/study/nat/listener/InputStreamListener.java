@@ -2,14 +2,14 @@ package com.jy.study.nat.listener;
 
 import com.jy.study.nat.constants.CommandConstants;
 import com.jy.study.nat.entity.Message;
-import com.jy.study.nat.util.MessageUtil;
+import com.jy.study.nat.exception.SocketClosedException;
+import com.jy.study.nat.handler.LengthMessageReader;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.Arrays;
 
 public class InputStreamListener implements Runnable{
 
@@ -23,13 +23,11 @@ public class InputStreamListener implements Runnable{
 
     @Override
     public void run() {
-        byte[] bytes = new byte[4096];
-        int len;
+        LengthMessageReader lengthMessageReader = new LengthMessageReader(in);
         try {
-            while (in.read() > -1) {
-                len = in.read(bytes);
-                if (len > -1) {
-                    Message message = MessageUtil.translate(Arrays.copyOfRange(bytes, 0, len));
+            while (true) {
+                try {
+                    Message message = lengthMessageReader.readMessage();
                     //conn
                     if(CommandConstants.conn.equals(message.getCommand())) {
                         String[] entry = message.getContent().split(":");
@@ -45,11 +43,12 @@ public class InputStreamListener implements Runnable{
                     } else {
                         System.out.println(String.format("receive a message: \r\n%s", message));
                     }
-                } else {
+                } catch (SocketClosedException e) {
+                    e.printStackTrace();
                     break;
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if(in != null) {

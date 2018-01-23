@@ -1,7 +1,7 @@
 package com.jy.study.nat.handler;
 
 import com.jy.study.nat.entity.Message;
-import com.jy.study.nat.exception.ClientCloseSocketException;
+import com.jy.study.nat.exception.SocketClosedException;
 import com.jy.study.nat.util.MessageUtil;
 
 import java.io.BufferedInputStream;
@@ -37,18 +37,18 @@ public class LengthMessageReader {
      * */
     private byte[] bytes = new byte[4096];
 
-    public Message readMessage() throws IOException, ClientCloseSocketException {
+    public Message readMessage() throws IOException, SocketClosedException {
         //读取消息长度(4个字节)
         if(msgLength == -1) {
             msgLength = in.read();
             if(msgLength == -1) {
-                throw new ClientCloseSocketException();
+                throw new SocketClosedException();
             }
         }
         //读取消息内容
         int len = in.read(bytes);
         if(len == -1) {
-            throw new ClientCloseSocketException();
+            throw new SocketClosedException();
         }
         else {
             //把读取的内容复制到buffer并移动buffer下标
