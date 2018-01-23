@@ -6,10 +6,19 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * server context
+ * */
 public class ServerContext {
 
+    /**
+     * 客户端记录集合
+     * */
     private List<ClientRecord> clientList;
 
+    /**
+     * 客户端记录套接子映射
+     * */
     public Map<ClientRecord, Socket> clientRecordSocketMap;
 
     public List<ClientRecord> getClientList() {

@@ -1,11 +1,11 @@
-package com.jy.study.nat.executor;
+package com.jy.study.nat.executor.response;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExecutorProvider {
+public class ResponseExecutorProvider {
 
-    public static final List<Executor> SERVER_EXECUTOR_LIST = new ArrayList<>();
+    public static final List<ResponseCommandExecutor> SERVER_EXECUTOR_LIST = new ArrayList<>();
 
     static  {
         SERVER_EXECUTOR_LIST.add(new ListClientsResponseCommandExecutor());

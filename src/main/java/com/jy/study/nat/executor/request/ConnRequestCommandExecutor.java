@@ -1,8 +1,9 @@
-package com.jy.study.nat.executor;
+package com.jy.study.nat.executor.request;
 
 import com.jy.study.nat.constants.CommandConstants;
 import com.jy.study.nat.entity.Message;
 import com.jy.study.nat.server.ChannelContext;
+import com.jy.study.nat.util.MessageUtil;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -10,10 +11,10 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class ConnRequestCommandExecutor extends CommandExecutor {
+public class ConnRequestCommandExecutor extends AbstractRequestCommandExecutor {
 
     @Override
-    public void doExecute(ChannelContext context, Message in) throws IOException {
+    public void doExecute(ChannelContext context) throws IOException {
         Message msg = new Message();
         msg.setCommand(CommandConstants.conn);
         Scanner scanner = new Scanner(System.in);
@@ -22,7 +23,7 @@ public class ConnRequestCommandExecutor extends CommandExecutor {
         System.out.println("请输入端口号");
         int port = Integer.parseInt(scanner.nextLine().trim());
         msg.setContent((ip + ":" + port));
-        writeMessage(context.getOut(), msg);
+        MessageUtil.writeMessage(context.getOut(), msg);
 
         Socket newSocket = new Socket();
         newSocket.setReuseAddress(true);

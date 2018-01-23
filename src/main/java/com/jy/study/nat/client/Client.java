@@ -1,9 +1,8 @@
 package com.jy.study.nat.client;
 
 import com.jy.study.nat.constants.CommandConstants;
-import com.jy.study.nat.entity.Message;
-import com.jy.study.nat.executor.ConnRequestCommandExecutor;
-import com.jy.study.nat.executor.ListClientsRequestCommandExecutor;
+import com.jy.study.nat.executor.request.RequestCommandExecutor;
+import com.jy.study.nat.executor.request.RequestExecutorProvider;
 import com.jy.study.nat.listener.InputStreamListener;
 import com.jy.study.nat.server.ChannelContext;
 
@@ -13,8 +12,12 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class Client {
+
+
+    private static Logger logger = Logger.getLogger(Client.class.getName());
 
     private static String host = "192.168.115.109";
     private static int port = 5000;
@@ -26,7 +29,7 @@ public class Client {
         socket.connect(new InetSocketAddress(host, port));
         int localPort = socket.getLocalPort();
         channelContext.setBindPort(localPort);
-        System.out.println(String.format("本地端口号: %s", localPort));
+        logger.info(String.format("本地端口号: %s", localPort));
         BufferedInputStream in = new BufferedInputStream(socket.getInputStream());
         BufferedOutputStream out = new BufferedOutputStream(socket.getOutputStream());
         channelContext.setOut(out);
@@ -49,12 +52,8 @@ public class Client {
     }
 
     public static void writeRequest(String command) throws IOException {
-        Message c = new Message();
-        c.setCommand(command);
-        if(CommandConstants.list.equals(command)) {
-            new ListClientsRequestCommandExecutor().execute(channelContext, c);
-        } else if(CommandConstants.conn.equals(command)) {
-            new ConnRequestCommandExecutor().execute(channelContext, c);
+        for (RequestCommandExecutor executor: RequestExecutorProvider.CLIENT_EXECUTOR_LIST) {
+            executor.execute(channelContext, command);
         }
     }
 }

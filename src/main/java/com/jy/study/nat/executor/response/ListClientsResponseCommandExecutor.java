@@ -1,14 +1,15 @@
-package com.jy.study.nat.executor;
+package com.jy.study.nat.executor.response;
 
 import com.jy.study.nat.constants.CommandConstants;
 import com.jy.study.nat.entity.ClientRecord;
 import com.jy.study.nat.entity.Message;
 import com.jy.study.nat.server.ChannelContext;
+import com.jy.study.nat.util.MessageUtil;
 
 import java.io.IOException;
 import java.util.List;
 
-public class ListClientsResponseCommandExecutor extends CommandExecutor{
+public class ListClientsResponseCommandExecutor extends AbstractResponseCommandExecutor {
 
     @Override
     public void doExecute(ChannelContext context, Message in) throws IOException {
@@ -21,7 +22,7 @@ public class ListClientsResponseCommandExecutor extends CommandExecutor{
             sb.append("client.").append(index++).append("  ").append(record.getHost()).append(":").append(record.getPort()).append("\r\n");
         }
         msg.setContent(sb.toString());
-        writeMessage(context.getOut(), msg);
+        MessageUtil.writeMessage(context.getOut(), msg);
     }
 
     public ListClientsResponseCommandExecutor() {

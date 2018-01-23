@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jy.study.nat.entity.Message;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 
 public class MessageUtil {
@@ -18,6 +19,15 @@ public class MessageUtil {
 
     public static Message translate(byte[] in) throws IOException {
         return mapper.readValue(in, Message.class);
+    }
+
+    public static void writeMessage(BufferedOutputStream outputStream, Message message) throws IOException {
+        if(message != null) {
+            byte[] bytes = MessageUtil.translate(message);
+            outputStream.write(bytes.length);
+            outputStream.write(bytes);
+            outputStream.flush();
+        }
     }
 
     static {

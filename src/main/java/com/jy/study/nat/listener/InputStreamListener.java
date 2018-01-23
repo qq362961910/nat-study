@@ -10,8 +10,11 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 public class InputStreamListener implements Runnable{
+
+    private static Logger logger = Logger.getLogger(InputStreamListener.class.getName());
 
     private BufferedInputStream in;
     private int localPort;
@@ -33,15 +36,15 @@ public class InputStreamListener implements Runnable{
                         String[] entry = message.getContent().split(":");
                         String targetIp = entry[0];
                         int targetPort = Integer.parseInt(entry[1]);
-                        System.out.println(String.format("receive a conn command, targetIp: %s, targetPort: %s", targetIp, targetPort) +", connecting....");
+                        logger.info(String.format("receive a conn command, targetIp: %s, targetPort: %s", targetIp, targetPort) +", connecting....");
                         Socket socket = new Socket();
                         socket.setReuseAddress(true);
                         socket.bind(new InetSocketAddress(
                                 InetAddress.getLocalHost().getHostAddress(), localPort));
                         socket.connect(new InetSocketAddress(targetIp, targetPort));
-                        System.out.println("connection established");
+                        logger.info("connection established");
                     } else {
-                        System.out.println(String.format("receive a message: \r\n%s", message));
+                        logger.info(String.format("receive a message: \r\n%s", message));
                     }
                 } catch (SocketClosedException e) {
                     e.printStackTrace();
@@ -55,6 +58,6 @@ public class InputStreamListener implements Runnable{
                 try { in.close(); } catch (IOException e) {e.printStackTrace();}
             }
         }
-        System.out.println("input stream listener exit");
+        logger.info("input stream listener exit");
     }
 }
